@@ -24,9 +24,11 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    // Default constructor
     public User() {
     }
 
+    // Parameterized constructor
     public User(Long id, String username, String email,
                 String password, Role role) {
         this.id = id;
@@ -35,6 +37,8 @@ public class User {
         this.password = password;
         this.role = role;
     }
+
+    // Getters and Setters
 
     public Long getId() {
         return id;

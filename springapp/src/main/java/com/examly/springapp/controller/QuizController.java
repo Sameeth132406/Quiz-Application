@@ -23,10 +23,7 @@ public class QuizController {
     private QuizService quizService;
 
 
-    // ==========================
-    // GET ALL QUIZZES
-    // ADMIN + EDUCATOR + STUDENT
-    // ==========================
+    
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','EDUCATOR','STUDENT')")
     public ResponseEntity<List<Quiz>> getAllQuizzes() {
@@ -37,10 +34,6 @@ public class QuizController {
     }
 
 
-    // ==========================
-    // GET QUIZ BY ID
-    // ADMIN + EDUCATOR + STUDENT
-    // ==========================
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','EDUCATOR','STUDENT')")
     public ResponseEntity<?> getQuizById(
@@ -63,10 +56,7 @@ public class QuizController {
 
 
 
-    // ==========================
-    // ADD QUIZ
-    // ADMIN + EDUCATOR ONLY
-    // ==========================
+    
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','EDUCATOR')")
     public ResponseEntity<Quiz> addQuiz(
@@ -85,10 +75,7 @@ public class QuizController {
 
 
 
-    // ==========================
-    // UPDATE QUIZ
-    // ADMIN + EDUCATOR ONLY
-    // ==========================
+   
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','EDUCATOR')")
     public ResponseEntity<?> updateQuiz(
@@ -113,10 +100,7 @@ public class QuizController {
 
 
 
-    // ==========================
-    // DELETE QUIZ
-    // ADMIN ONLY
-    // ==========================
+    
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteQuiz(
@@ -141,11 +125,6 @@ public class QuizController {
     }
 
 
-
-    // ==========================
-    // SEARCH BY TITLE
-    // ALL AUTHENTICATED USERS
-    // ==========================
     @GetMapping("/search/title")
     @PreAuthorize("hasAnyRole('ADMIN','EDUCATOR','STUDENT')")
     public ResponseEntity<List<Quiz>> searchByTitle(
@@ -158,10 +137,6 @@ public class QuizController {
     }
 
 
-
-    // ==========================
-    // SEARCH BY DESCRIPTION
-    // ==========================
     @GetMapping("/search/description")
     @PreAuthorize("hasAnyRole('ADMIN','EDUCATOR','STUDENT')")
     public ResponseEntity<List<Quiz>> searchByDescription(
@@ -174,10 +149,6 @@ public class QuizController {
     }
 
 
-
-    // ==========================
-    // SEARCH BY CATEGORY
-    // ==========================
     @GetMapping("/category")
     @PreAuthorize("hasAnyRole('ADMIN','EDUCATOR','STUDENT')")
     public ResponseEntity<List<Quiz>> getByCategory(
@@ -190,10 +161,6 @@ public class QuizController {
     }
 
 
-
-    // ==========================
-    // FILTER BY DIFFICULTY
-    // ==========================
     @GetMapping("/difficulty")
     @PreAuthorize("hasAnyRole('ADMIN','EDUCATOR','STUDENT')")
     public ResponseEntity<List<Quiz>> getByDifficulty(
@@ -206,10 +173,6 @@ public class QuizController {
     }
 
 
-
-    // ==========================
-    // FILTER BY DURATION
-    // ==========================
     @GetMapping("/duration")
     @PreAuthorize("hasAnyRole('ADMIN','EDUCATOR','STUDENT')")
     public ResponseEntity<List<Quiz>> getByDuration(

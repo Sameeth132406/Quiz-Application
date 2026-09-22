@@ -1,17 +1,21 @@
 package com.examly.springapp.repository;
 
 import com.examly.springapp.model.Analytics;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface AnalyticsRepository extends JpaRepository<Analytics, Long> {
+public interface AnalyticsRepository
+        extends JpaRepository<Analytics, Long> {
 
     List<Analytics> findByQuizId(Long quizId);
 
     List<Analytics> findByUserId(Long userId);
 
+    List<Analytics> findByUserIdAndQuizId(
+            Long userId,
+            Long quizId
+    );
 }

@@ -1,69 +1,25 @@
 package com.examly.springapp.service;
 
 import com.examly.springapp.model.Response;
-import com.examly.springapp.repository.ResponseRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-@Service
-public class ResponseService {
+public interface ResponseService {
 
-    @Autowired
-    private ResponseRepository responseRepository;
+    List<Response> getAllResponses();
 
-    public List<Response> getAllResponses() {
-        return responseRepository.findAll();
-    }
+    Response getResponseById(Long id);
 
-    public Response getResponseById(Long id) {
-        return responseRepository.findById(id).orElse(null);
-    }
+    Response addResponse(Response response);
 
-    public Response addResponse(Response response) {
-        return responseRepository.save(response);
-    }
+    Response updateResponse(Long id, Response response);
 
-    public Response updateResponse(Long id, Response response) {
+    boolean deleteResponse(Long id);
 
-        Response existing = responseRepository.findById(id).orElse(null);
+    List<Response> getByAttempt(Long attemptId);
 
-        if (existing == null) {
-            return null;
-        }
+    List<Response> getByQuestion(Long questionId);
 
-        existing.setAttemptId(response.getAttemptId());
-        existing.setQuestionId(response.getQuestionId());
-        existing.setSelectedAnswer(response.getSelectedAnswer());
-        existing.setCorrect(response.isCorrect());
+    List<Response> getCorrectResponses();
 
-        return responseRepository.save(existing);
-    }
-
-    public boolean deleteResponse(Long id) {
-
-        if (!responseRepository.existsById(id)) {
-            return false;
-        }
-
-        responseRepository.deleteById(id);
-        return true;
-    }
-
-    public List<Response> getByAttempt(Long attemptId) {
-        return responseRepository.findByAttemptId(attemptId);
-    }
-
-    public List<Response> getByQuestion(Long questionId) {
-        return responseRepository.findByQuestionId(questionId);
-    }
-
-    public List<Response> getCorrectResponses() {
-        return responseRepository.findByCorrect(true);
-    }
-
-    public List<Response> getIncorrectResponses() {
-        return responseRepository.findByCorrect(false);
-    }
+    List<Response> getIncorrectResponses();
 }

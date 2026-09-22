@@ -18,17 +18,20 @@ public class QuizAttemptController {
     @Autowired
     private QuizAttemptService quizAttemptService;
 
-    // ==========================
-    // GET ALL ATTEMPTS
-    // ==========================
+    @Autowired
+    private com.examly.springapp.repository.UserRepository userRepository;
+
     @GetMapping
-    public ResponseEntity<List<QuizAttempt>> getAllAttempts() {
+    public ResponseEntity<List<QuizAttempt>> getAllAttempts(org.springframework.security.core.Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            com.examly.springapp.model.User user = userRepository.findByUsername(authentication.getName()).orElse(null);
+            if (user != null && user.getRole() == com.examly.springapp.enums.Role.STUDENT) {
+                return ResponseEntity.ok(quizAttemptService.getAttemptsByUser(user.getId()));
+            }
+        }
         return ResponseEntity.ok(quizAttemptService.getAllAttempts());
     }
 
-    // ==========================
-    // GET ATTEMPT BY ID
-    // ==========================
     @GetMapping("/{id}")
     public ResponseEntity<?> getAttemptById(@PathVariable Long id) {
 
@@ -42,9 +45,7 @@ public class QuizAttemptController {
         return ResponseEntity.ok(attempt);
     }
 
-    // ==========================
-    // START QUIZ
-    // ==========================
+   
     @PostMapping
     public ResponseEntity<QuizAttempt> startQuiz(@RequestBody QuizAttempt attempt) {
 
@@ -53,9 +54,7 @@ public class QuizAttemptController {
         return new ResponseEntity<>(savedAttempt, HttpStatus.CREATED);
     }
 
-    // ==========================
-    // UPDATE ATTEMPT
-    // ==========================
+    
     @PutMapping("/{id}")
     public ResponseEntity<?> updateAttempt(@PathVariable Long id,
                                            @RequestBody QuizAttempt attempt) {
@@ -70,9 +69,20 @@ public class QuizAttemptController {
         return ResponseEntity.ok(updatedAttempt);
     }
 
-    // ==========================
-    // DELETE ATTEMPT
-    // ==========================
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<QuizAttempt>> getAttemptsByUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(quizAttemptService.getAttemptsByUser(userId));
+    }
+
+    @PostMapping("/submit/{quizId}")
+    public ResponseEntity<com.examly.springapp.dto.SubmissionResultDTO> submitQuiz(
+            @PathVariable Long quizId,
+            @RequestBody com.examly.springapp.dto.QuizSubmissionDTO submission) {
+
+        com.examly.springapp.dto.SubmissionResultDTO result = quizAttemptService.submitQuiz(quizId, submission);
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAttempt(@PathVariable Long id) {
 

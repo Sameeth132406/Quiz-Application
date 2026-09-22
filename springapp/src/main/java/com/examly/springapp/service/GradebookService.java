@@ -1,72 +1,25 @@
 package com.examly.springapp.service;
 
 import com.examly.springapp.model.Gradebook;
-import com.examly.springapp.repository.GradebookRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-@Service
-public class GradebookService {
+public interface GradebookService {
 
-    @Autowired
-    private GradebookRepository gradebookRepository;
+    List<Gradebook> getAllGrades();
 
-    public List<Gradebook> getAllGrades() {
-        return gradebookRepository.findAll();
-    }
+    Gradebook getGradeById(Long id);
 
-    public Gradebook getGradeById(Long id) {
-        return gradebookRepository.findById(id).orElse(null);
-    }
+    Gradebook addGrade(Gradebook gradebook);
 
-    public Gradebook addGrade(Gradebook gradebook) {
-        return gradebookRepository.save(gradebook);
-    }
+    Gradebook updateGrade(Long id, Gradebook gradebook);
 
-    public Gradebook updateGrade(Long id, Gradebook gradebook) {
+    boolean deleteGrade(Long id);
 
-        Gradebook existing = gradebookRepository.findById(id).orElse(null);
+    List<Gradebook> getGradesByUser(Long userId);
 
-        if (existing == null) {
-            return null;
-        }
+    List<Gradebook> getGradesByCourse(Long courseId);
 
-        existing.setUserId(gradebook.getUserId());
-        existing.setCourseId(gradebook.getCourseId());
-        existing.setQuizId(gradebook.getQuizId());
-        existing.setMarksObtained(gradebook.getMarksObtained());
-        existing.setTotalMarks(gradebook.getTotalMarks());
-        existing.setGrade(gradebook.getGrade());
+    List<Gradebook> getGradesByQuiz(Long quizId);
 
-        return gradebookRepository.save(existing);
-    }
-
-    public boolean deleteGrade(Long id) {
-
-        if (!gradebookRepository.existsById(id)) {
-            return false;
-        }
-
-        gradebookRepository.deleteById(id);
-        return true;
-    }
-
-    public List<Gradebook> getGradesByUser(Long userId) {
-        return gradebookRepository.findByUserId(userId);
-    }
-
-    public List<Gradebook> getGradesByCourse(Long courseId) {
-        return gradebookRepository.findByCourseId(courseId);
-    }
-
-    public List<Gradebook> getGradesByQuiz(Long quizId) {
-        return gradebookRepository.findByQuizId(quizId);
-    }
-
-    public List<Gradebook> getGradesByLetter(String grade) {
-        return gradebookRepository.findByGrade(grade);
-    }
+    List<Gradebook> getGradesByLetter(String grade);
 }

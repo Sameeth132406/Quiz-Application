@@ -1,67 +1,19 @@
 package com.examly.springapp.service;
 
 import com.examly.springapp.model.User;
-import com.examly.springapp.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-@Service
-public class UserService {
+public interface UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    List<User> getAllUsers();
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
+    User getUserById(Long id);
 
-    public User getUserById(Long id) {
-        return userRepository.findById(id).orElse(null);
-    }
+    User addUser(User user);
 
-    public User addUser(User user) {
+    User updateUser(Long id, User user);
 
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Email already exists");
-        }
+    boolean deleteUser(Long id);
 
-        return userRepository.save(user);
-    }
-
-    public User updateUser(Long id, User user) {
-
-        User existing = userRepository.findById(id).orElse(null);
-
-        if (existing == null) {
-            return null;
-        }
-
-        existing.setUsername(user.getUsername());
-        existing.setEmail(user.getEmail());
-        existing.setPassword(user.getPassword());
-        existing.setRole(user.getRole());
-
-        return userRepository.save(existing);
-    }
-
-    public boolean deleteUser(Long id) {
-
-        if (!userRepository.existsById(id))
-            return false;
-
-        userRepository.deleteById(id);
-        return true;
-    }
-
-    public User login(String email, String password) {
-
-        User user = userRepository.findByEmail(email).orElse(null);
-
-        if (user != null && user.getPassword().equals(password))
-            return user;
-
-        return null;
-    }
+    User login(String email, String password);
 }

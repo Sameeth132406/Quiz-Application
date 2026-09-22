@@ -1,56 +1,21 @@
 package com.examly.springapp.service;
 
 import com.examly.springapp.model.Enrollment;
-import com.examly.springapp.repository.EnrollmentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-@Service
-public class EnrollmentService {
+public interface EnrollmentService {
 
-    @Autowired
-    private EnrollmentRepository enrollmentRepository;
+    List<Enrollment> getAllEnrollments();
 
-    public List<Enrollment> getAllEnrollments() {
-        return enrollmentRepository.findAll();
-    }
+    Enrollment getEnrollmentById(Long id);
 
-    public Enrollment getEnrollmentById(Long id) {
-        return enrollmentRepository.findById(id).orElse(null);
-    }
+    Enrollment enrollStudent(Enrollment enrollment);
 
-    public Enrollment enrollStudent(Enrollment enrollment) {
+    boolean deleteEnrollment(Long id);
 
-        if (enrollmentRepository.existsByUserIdAndCourseId(
-                enrollment.getUserId(),
-                enrollment.getCourseId())) {
+    List<Enrollment> getByUser(Long userId);
 
-            throw new RuntimeException("Student already enrolled");
-        }
+    List<Enrollment> getByCourse(Long courseId);
 
-        return enrollmentRepository.save(enrollment);
-    }
-
-    public boolean deleteEnrollment(Long id) {
-
-        if (!enrollmentRepository.existsById(id))
-            return false;
-
-        enrollmentRepository.deleteById(id);
-        return true;
-    }
-
-    public List<Enrollment> getByUser(Long userId) {
-        return enrollmentRepository.findByUserId(userId);
-    }
-
-    public List<Enrollment> getByCourse(Long courseId) {
-        return enrollmentRepository.findByCourseId(courseId);
-    }
-
-    public List<Enrollment> getByStatus(String status) {
-        return enrollmentRepository.findByStatus(status);
-    }
+    List<Enrollment> getByStatus(String status);
 }

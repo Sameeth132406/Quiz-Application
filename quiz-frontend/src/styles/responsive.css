@@ -1,0 +1,78 @@
+/* Responsive CSS Media Queries */
+@media (max-width: 1024px) {
+  .main-content {
+    padding: 1.5rem 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .quiz-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .options-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nav-menu {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: rgba(10, 3, 5, 0.97);
+    border-bottom: 1px solid rgba(225, 29, 72, 0.2);
+    padding: 1rem;
+    box-shadow: var(--shadow-lg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .nav-menu.open {
+    display: flex;
+  }
+
+  .nav-toggle {
+    display: block !important;
+  }
+
+  .quiz-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .quiz-search-input {
+    width: 100%;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .take-quiz-progress {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .quiz-card-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .quiz-card-actions .btn {
+    width: 100%;
+  }
+}

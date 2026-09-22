@@ -1,64 +1,21 @@
 package com.examly.springapp.service;
 
 import com.examly.springapp.model.Analytics;
-import com.examly.springapp.repository.AnalyticsRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-@Service
-public class AnalyticsService {
+public interface AnalyticsService {
 
-    @Autowired
-    private AnalyticsRepository analyticsRepository;
+    List<Analytics> getAllAnalytics();
 
-    public List<Analytics> getAllAnalytics() {
-        return analyticsRepository.findAll();
-    }
+    Analytics getAnalyticsById(Long id);
 
-    public Analytics getAnalyticsById(Long id) {
-        return analyticsRepository.findById(id).orElse(null);
-    }
+    Analytics addAnalytics(Analytics analytics);
 
-    public Analytics addAnalytics(Analytics analytics) {
-        return analyticsRepository.save(analytics);
-    }
+    Analytics updateAnalytics(Long id, Analytics analytics);
 
-    public Analytics updateAnalytics(Long id, Analytics analytics) {
+    boolean deleteAnalytics(Long id);
 
-        Analytics existing = analyticsRepository.findById(id).orElse(null);
+    List<Analytics> getAnalyticsByQuiz(Long quizId);
 
-        if (existing == null) {
-            return null;
-        }
-
-        existing.setQuizId(analytics.getQuizId());
-        existing.setUserId(analytics.getUserId());
-        existing.setTotalAttempts(analytics.getTotalAttempts());
-        existing.setAverageScore(analytics.getAverageScore());
-        existing.setHighestScore(analytics.getHighestScore());
-        existing.setLowestScore(analytics.getLowestScore());
-
-        return analyticsRepository.save(existing);
-    }
-
-    public boolean deleteAnalytics(Long id) {
-
-        if (!analyticsRepository.existsById(id)) {
-            return false;
-        }
-
-        analyticsRepository.deleteById(id);
-        return true;
-    }
-
-    public List<Analytics> getAnalyticsByQuiz(Long quizId) {
-        return analyticsRepository.findByQuizId(quizId);
-    }
-
-    public List<Analytics> getAnalyticsByUser(Long userId) {
-        return analyticsRepository.findByUserId(userId);
-    }
+    List<Analytics> getAnalyticsByUser(Long userId);
 }

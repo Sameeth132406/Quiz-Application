@@ -29,6 +29,8 @@ public class QuizAttempt {
 
     private LocalDateTime completedAt;
 
+    private Integer tabSwitches = 0;
+
     public QuizAttempt() {
     }
 
@@ -47,6 +49,26 @@ public class QuizAttempt {
         this.status = status;
         this.startedAt = startedAt;
         this.completedAt = completedAt;
+        this.tabSwitches = 0;
+    }
+
+    public QuizAttempt(Long id,
+                       Long userId,
+                       Long quizId,
+                       Integer score,
+                       AttemptStatus status,
+                       LocalDateTime startedAt,
+                       LocalDateTime completedAt,
+                       Integer tabSwitches) {
+
+        this.id = id;
+        this.userId = userId;
+        this.quizId = quizId;
+        this.score = score;
+        this.status = status;
+        this.startedAt = startedAt;
+        this.completedAt = completedAt;
+        this.tabSwitches = tabSwitches != null ? tabSwitches : 0;
     }
 
     public Long getId() {
@@ -99,6 +121,14 @@ public class QuizAttempt {
 
     public void setStartedAt(LocalDateTime startedAt) {
         this.startedAt = startedAt;
+    }
+
+    public Integer getTabSwitches() {
+        return tabSwitches != null ? tabSwitches : 0;
+    }
+
+    public void setTabSwitches(Integer tabSwitches) {
+        this.tabSwitches = tabSwitches != null ? tabSwitches : 0;
     }
 
     public void setCompletedAt(LocalDateTime completedAt) {

@@ -1,68 +1,23 @@
 package com.examly.springapp.service;
 
 import com.examly.springapp.model.IntegrityEvent;
-import com.examly.springapp.repository.IntegrityEventRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-@Service
-public class IntegrityEventService {
+public interface IntegrityEventService {
 
-    @Autowired
-    private IntegrityEventRepository integrityEventRepository;
+    List<IntegrityEvent> getAllEvents();
 
-    public List<IntegrityEvent> getAllEvents() {
-        return integrityEventRepository.findAll();
-    }
+    IntegrityEvent getEventById(Long id);
 
-    public IntegrityEvent getEventById(Long id) {
-        return integrityEventRepository.findById(id).orElse(null);
-    }
+    IntegrityEvent addEvent(IntegrityEvent event);
 
-    public IntegrityEvent addEvent(IntegrityEvent event) {
-        return integrityEventRepository.save(event);
-    }
+    IntegrityEvent updateEvent(Long id, IntegrityEvent event);
 
-    public IntegrityEvent updateEvent(Long id, IntegrityEvent event) {
+    boolean deleteEvent(Long id);
 
-        IntegrityEvent existing =
-                integrityEventRepository.findById(id).orElse(null);
+    List<IntegrityEvent> getEventsByUser(Long userId);
 
-        if (existing == null) {
-            return null;
-        }
+    List<IntegrityEvent> getEventsByAttempt(Long attemptId);
 
-        existing.setUserId(event.getUserId());
-        existing.setQuizAttemptId(event.getQuizAttemptId());
-        existing.setEventType(event.getEventType());
-        existing.setEventTime(event.getEventTime());
-        existing.setRemarks(event.getRemarks());
-
-        return integrityEventRepository.save(existing);
-    }
-
-    public boolean deleteEvent(Long id) {
-
-        if (!integrityEventRepository.existsById(id)) {
-            return false;
-        }
-
-        integrityEventRepository.deleteById(id);
-        return true;
-    }
-
-    public List<IntegrityEvent> getEventsByUser(Long userId) {
-        return integrityEventRepository.findByUserId(userId);
-    }
-
-    public List<IntegrityEvent> getEventsByAttempt(Long attemptId) {
-        return integrityEventRepository.findByQuizAttemptId(attemptId);
-    }
-
-    public List<IntegrityEvent> getEventsByType(String type) {
-        return integrityEventRepository.findByEventType(type);
-    }
+    List<IntegrityEvent> getEventsByType(String type);
 }
