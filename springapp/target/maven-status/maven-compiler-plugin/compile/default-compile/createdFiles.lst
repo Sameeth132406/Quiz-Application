@@ -1,0 +1,6 @@
+com/examly/springapp/controller/QuizController.class
+com/examly/springapp/SpringappApplication.class
+com/examly/springapp/repository/QuizRepository.class
+com/examly/springapp/service/QuizService.class
+com/examly/springapp/resources/QuizApplicationTests.class
+com/examly/springapp/model/Quiz.class
