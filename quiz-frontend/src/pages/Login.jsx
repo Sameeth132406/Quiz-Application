@@ -33,8 +33,12 @@ const Login = () => {
       // Response includes token, message, role
       const token = response.token || 'demo-jwt-token';
       const role = response.role || 'STUDENT';
-      const userId = response.userId || response.id;
-      const user = { id: userId, username: response.username || formData.username, role };
+      const user = {
+        id: response.userId || response.id,
+        username: response.username || formData.username,
+        role,
+        profilePictureUrl: response.profilePictureUrl || null
+      };
 
       login(token, user, role);
       navigate('/dashboard');
@@ -48,10 +52,26 @@ const Login = () => {
 
   return (
     <div className="auth-container">
+      <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.65rem', textDecoration: 'none', marginBottom: '1.75rem' }}>
+        <div style={{
+          width: '34px', height: '34px', borderRadius: '50%',
+          background: '#eff6ff', border: '1.5px solid #bfdbfe',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          boxShadow: '0 2px 6px rgba(37, 99, 235, 0.2)'
+        }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <span style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.03em' }}>
+          quizportal
+        </span>
+      </Link>
+
       <div className="auth-card">
         <div className="auth-header">
           <h2 className="auth-title">Welcome Back</h2>
-          <p className="auth-subtitle">Sign in to access your QuizFlow account</p>
+          <p className="auth-subtitle">Sign in to access your account</p>
         </div>
 
         {error && <ErrorMessage message={error} />}

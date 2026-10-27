@@ -16,6 +16,7 @@ public class SubmissionResultDTO {
     private String status;
     private Integer tabSwitches;
     private LocalDateTime completedAt;
+    private Boolean resultsPublished = false;
 
     public SubmissionResultDTO() {
     }
@@ -140,5 +141,13 @@ public class SubmissionResultDTO {
 
     public void setCompletedAt(LocalDateTime completedAt) {
         this.completedAt = completedAt;
+    }
+
+    public Boolean getResultsPublished() {
+        return resultsPublished != null ? resultsPublished : false;
+    }
+
+    public void setResultsPublished(Boolean resultsPublished) {
+        this.resultsPublished = resultsPublished != null ? resultsPublished : false;
     }
 }

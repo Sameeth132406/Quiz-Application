@@ -98,6 +98,21 @@ public class QuizController {
         return ResponseEntity.ok(updatedQuiz);
     }
 
+    @PutMapping("/{id}/publish-results")
+    @PreAuthorize("hasAnyRole('ADMIN','EDUCATOR')")
+    public ResponseEntity<?> setPublishResults(
+            @PathVariable Long id,
+            @RequestParam(required = false, defaultValue = "true") boolean published) {
+
+        Quiz updatedQuiz = quizService.setResultsPublished(id, published);
+        if (updatedQuiz == null) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Quiz not found with id " + id);
+        }
+        return ResponseEntity.ok(updatedQuiz);
+    }
+
 
 
     

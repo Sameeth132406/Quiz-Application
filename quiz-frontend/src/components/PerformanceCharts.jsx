@@ -18,14 +18,14 @@ export const ScoreTrendChart = ({ attempts = [], quizzesMap = {} }) => {
       const score = att.score || 0;
       const quiz = quizzesMap[att.quizId];
       const total = quiz?.totalQuestions || att.totalMarks || 1;
-      const pct = Math.min(100, Math.max(0, Math.round((score / total) * 100)));
+      const pct = att.percentage != null ? Math.round(att.percentage) : Math.min(100, Math.max(0, Math.round((score / total) * 100)));
       return {
-        id: att.id || index,
-        label: quiz?.title || `Quiz #${att.quizId || index + 1}`,
+        id: att.attemptId || att.id || index,
+        label: att.quizTitle || quiz?.title || `Quiz ${index + 1}`,
         score: pct,
         rawScore: score,
         total: total,
-        date: att.completedAt ? new Date(att.completedAt).toLocaleDateString() : `#${index + 1}`
+        date: att.completedAt ? new Date(att.completedAt).toLocaleDateString() : `Attempt ${index + 1}`
       };
     });
 
@@ -178,7 +178,7 @@ export const ScoreDistributionDonut = ({ attempts = [], quizzesMap = {} }) => {
     const score = a.score || 0;
     const quiz = quizzesMap[a.quizId];
     const total = quiz?.totalQuestions || a.totalMarks || 1;
-    const pct = total > 0 ? (score / total) * 100 : 0;
+    const pct = a.percentage != null ? a.percentage : (total > 0 ? (score / total) * 100 : 0);
     if (pct >= 85) mastery++;
     else if (pct >= 70) proficient++;
     else if (pct >= 50) passing++;
@@ -274,3 +274,162 @@ export const ScoreDistributionDonut = ({ attempts = [], quizzesMap = {} }) => {
     </div>
   );
 };
+
+export const BarChartComponent = ({ items = [], title = '', color = '#2563eb', unit = '%' }) => {
+  if (!items || items.length === 0) {
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center', color: '#94a3b8', fontSize: '0.85rem' }}>
+        No data available for chart.
+      </div>
+    );
+  }
+
+  const maxValue = Math.max(...items.map(it => it.value || 0), 100);
+
+  return (
+    <div style={{ width: '100%', padding: '0.5rem 0' }}>
+      {title && <div style={{ fontSize: '0.85rem', fontWeight: '700', marginBottom: '0.8rem', color: '#334155' }}>{title}</div>}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        {items.map((item, idx) => {
+          const pct = Math.min(100, Math.round(((item.value || 0) / maxValue) * 100));
+          return (
+            <div key={idx}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '0.25rem' }}>
+                <span style={{ fontWeight: '600', color: '#1e293b' }}>{item.label}</span>
+                <span style={{ fontWeight: '700', color: color }}>
+                  {item.value}{unit} {item.secondaryText ? `(${item.secondaryText})` : ''}
+                </span>
+              </div>
+              <div style={{ width: '100%', height: '8px', background: '#e2e8f0', borderRadius: '999px', overflow: 'hidden' }}>
+                <div style={{
+                  width: `${pct}%`,
+                  height: '100%',
+                  background: item.color || color,
+                  borderRadius: '999px',
+                  transition: 'width 0.4s ease'
+                }}></div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+export const ProgressComparisonBar = ({ label, current, total, color = '#10b981' }) => {
+  const pct = total > 0 ? Math.min(100, Math.round((current / total) * 100)) : 0;
+  return (
+    <div style={{ marginBottom: '1rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: '0.3rem' }}>
+        <span style={{ fontWeight: '600', color: '#334155' }}>{label}</span>
+        <span style={{ fontWeight: '700', color: '#0f172a' }}>{current} / {total} ({pct}%)</span>
+      </div>
+      <div style={{ width: '100%', height: '10px', background: '#f1f5f9', borderRadius: '999px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+        <div style={{ width: `${pct}%`, height: '100%', background: color, borderRadius: '999px', transition: 'width 0.4s ease' }}></div>
+      </div>
+    </div>
+  );
+};
+
+export const LineChartComponent = ({ data = [], height = 180, color = '#2563eb' }) => {
+  const [hoveredPoint, setHoveredPoint] = useState(null);
+
+  if (!data || data.length === 0) {
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center', color: '#94a3b8', fontSize: '0.85rem' }}>
+        No trend records available to display.
+      </div>
+    );
+  }
+
+  const width = 500;
+  const paddingX = 40;
+  const paddingY = 25;
+
+  const points = data.map((d, i) => {
+    const x = paddingX + (i * (width - 2 * paddingX)) / Math.max(1, data.length - 1);
+    const score = d.score || 0;
+    const y = height - paddingY - (score / 100) * (height - 2 * paddingY);
+    return { ...d, x, y, score };
+  });
+
+  const pathD = points.length === 1
+    ? `M ${paddingX},${points[0].y} L ${width - paddingX},${points[0].y}`
+    : points.reduce((acc, curr, idx) => `${acc} ${idx === 0 ? 'M' : 'L'} ${curr.x},${curr.y}`, '');
+
+  const areaD = points.length === 1
+    ? ''
+    : `${pathD} L ${points[points.length - 1].x},${height - paddingY} L ${points[0].x},${height - paddingY} Z`;
+
+  return (
+    <div style={{ width: '100%', position: 'relative' }}>
+      <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', height: 'auto', overflow: 'visible' }}>
+        <defs>
+          <linearGradient id="lineChartGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={color} stopOpacity="0.25" />
+            <stop offset="100%" stopColor={color} stopOpacity="0.0" />
+          </linearGradient>
+        </defs>
+
+        {[0, 25, 50, 75, 100].map((val) => {
+          const y = height - paddingY - (val / 100) * (height - 2 * paddingY);
+          return (
+            <g key={val}>
+              <line
+                x1={paddingX}
+                y1={y}
+                x2={width - paddingX}
+                y2={y}
+                stroke="#f1f5f9"
+                strokeDasharray="4 4"
+                strokeWidth="1"
+              />
+              <text x={paddingX - 10} y={y + 3} textAnchor="end" fontSize="9" fill="#94a3b8" fontWeight="600">
+                {val}%
+              </text>
+            </g>
+          );
+        })}
+
+        {areaD && <path d={areaD} fill="url(#lineChartGradient)" />}
+        <path d={pathD} fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+
+        {points.map((pt, idx) => (
+          <g key={idx} onMouseEnter={() => setHoveredPoint(pt)} onMouseLeave={() => setHoveredPoint(null)}>
+            <circle
+              cx={pt.x}
+              cy={pt.y}
+              r={hoveredPoint === pt ? 6 : 4}
+              fill="#ffffff"
+              stroke={color}
+              strokeWidth={hoveredPoint === pt ? 3 : 2}
+              style={{ transition: 'all 0.15s ease', cursor: 'pointer' }}
+            />
+          </g>
+        ))}
+      </svg>
+      {hoveredPoint && (
+        <div style={{
+          position: 'absolute',
+          left: `${(hoveredPoint.x / width) * 100}%`,
+          top: `${(hoveredPoint.y / height) * 100}%`,
+          transform: 'translate(-50%, -120%)',
+          background: '#0f172a',
+          color: '#ffffff',
+          padding: '0.35rem 0.65rem',
+          borderRadius: '6px',
+          fontSize: '0.78rem',
+          fontWeight: 700,
+          whiteSpace: 'nowrap',
+          pointerEvents: 'none',
+          zIndex: 10,
+          boxShadow: '0 4px 10px rgba(0,0,0,0.2)'
+        }}>
+          {hoveredPoint.label}: {hoveredPoint.score}%
+        </div>
+      )}
+    </div>
+  );
+};
+

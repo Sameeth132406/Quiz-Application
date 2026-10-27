@@ -6,15 +6,21 @@ import com.examly.springapp.enums.AttemptStatus;
 import com.examly.springapp.model.Analytics;
 import com.examly.springapp.model.Gradebook;
 import com.examly.springapp.model.IntegrityEvent;
+import com.examly.springapp.model.Leaderboard;
 import com.examly.springapp.model.Question;
+import com.examly.springapp.model.Quiz;
 import com.examly.springapp.model.QuizAttempt;
 import com.examly.springapp.model.Response;
+import com.examly.springapp.model.User;
 import com.examly.springapp.repository.AnalyticsRepository;
 import com.examly.springapp.repository.GradebookRepository;
 import com.examly.springapp.repository.IntegrityEventRepository;
+import com.examly.springapp.repository.LeaderboardRepository;
 import com.examly.springapp.repository.QuestionRepository;
 import com.examly.springapp.repository.QuizAttemptRepository;
+import com.examly.springapp.repository.QuizRepository;
 import com.examly.springapp.repository.ResponseRepository;
+import com.examly.springapp.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +34,9 @@ public class QuizAttemptServiceImpl implements QuizAttemptService {
 
     @Autowired
     private QuizAttemptRepository quizAttemptRepository;
+
+    @Autowired
+    private QuizRepository quizRepository;
 
     @Autowired
     private QuestionRepository questionRepository;
@@ -45,16 +54,31 @@ public class QuizAttemptServiceImpl implements QuizAttemptService {
     private GradebookRepository gradebookRepository;
 
     @Autowired
-    private com.examly.springapp.repository.UserRepository userRepository;
+    private UserRepository userRepository;
+
+    @Autowired
+    private LeaderboardRepository leaderboardRepository;
+
+    @Autowired
+    private LeaderboardService leaderboardService;
+
+    @Autowired
+    private BadgeService badgeService;
 
     @Override
     public List<QuizAttempt> getAllAttempts() {
-        return quizAttemptRepository.findAll();
+        List<QuizAttempt> attempts = quizAttemptRepository.findAll();
+        enrichAttemptsWithUserData(attempts);
+        return attempts;
     }
 
     @Override
     public QuizAttempt getAttemptById(Long id) {
-        return quizAttemptRepository.findById(id).orElse(null);
+        QuizAttempt attempt = quizAttemptRepository.findById(id).orElse(null);
+        if (attempt != null) {
+            enrichAttemptsWithUserData(java.util.Collections.singletonList(attempt));
+        }
+        return attempt;
     }
 
     @Override
@@ -95,7 +119,45 @@ public class QuizAttemptServiceImpl implements QuizAttemptService {
 
     @Override
     public List<QuizAttempt> getAttemptsByUser(Long userId) {
-        return quizAttemptRepository.findByUserId(userId);
+        List<QuizAttempt> attempts = quizAttemptRepository.findByUserId(userId);
+        enrichAttemptsWithUserData(attempts);
+        return attempts;
+    }
+
+    private void enrichAttemptsWithUserData(List<QuizAttempt> attempts) {
+        if (attempts == null || attempts.isEmpty()) {
+            return;
+        }
+        try {
+            Map<Long, User> userMap = userRepository.findAll().stream()
+                    .filter(u -> u.getId() != null)
+                    .collect(java.util.stream.Collectors.toMap(
+                            User::getId,
+                            u -> u,
+                            (existing, replacement) -> existing
+                    ));
+            Map<Long, Quiz> quizMap = quizRepository.findAll().stream()
+                    .filter(q -> q.getId() != null)
+                    .collect(java.util.stream.Collectors.toMap(
+                            Quiz::getId,
+                            q -> q,
+                            (existing, replacement) -> existing
+                    ));
+            for (QuizAttempt a : attempts) {
+                if (a.getUserId() != null && userMap.containsKey(a.getUserId())) {
+                    User u = userMap.get(a.getUserId());
+                    a.setStudentName(u.getUsername());
+                    a.setUsername(u.getUsername());
+                    a.setStudentEmail(u.getEmail());
+                    a.setUserEmail(u.getEmail());
+                }
+                if (a.getQuizId() != null && quizMap.containsKey(a.getQuizId())) {
+                    Quiz q = quizMap.get(a.getQuizId());
+                    a.setResultsPublished(q.getResultsPublished());
+                }
+            }
+        } catch (Exception ignored) {
+        }
     }
 
     @Override
@@ -158,16 +220,30 @@ public class QuizAttemptServiceImpl implements QuizAttemptService {
         LocalDateTime complete = submission.getCompletedAt() != null ? submission.getCompletedAt() : LocalDateTime.now();
         int tabSwitches = submission.getTabSwitches() != null ? submission.getTabSwitches() : 0;
 
-        QuizAttempt attempt = new QuizAttempt(
-                null,
-                userId,
-                quizId,
-                score,
-                AttemptStatus.COMPLETED,
-                start,
-                complete,
-                tabSwitches
-        );
+        QuizAttempt attempt = null;
+        if (submission.getAttemptId() != null) {
+            attempt = quizAttemptRepository.findById(submission.getAttemptId()).orElse(null);
+        }
+        if (attempt != null) {
+            attempt.setScore(score);
+            attempt.setStatus(AttemptStatus.COMPLETED);
+            if (submission.getStartedAt() != null) {
+                attempt.setStartedAt(start);
+            }
+            attempt.setCompletedAt(complete);
+            attempt.setTabSwitches(tabSwitches);
+        } else {
+            attempt = new QuizAttempt(
+                    null,
+                    userId,
+                    quizId,
+                    score,
+                    AttemptStatus.COMPLETED,
+                    start,
+                    complete,
+                    tabSwitches
+            );
+        }
         QuizAttempt savedAttempt = quizAttemptRepository.save(attempt);
 
         // Save individual responses
@@ -264,7 +340,7 @@ public class QuizAttemptServiceImpl implements QuizAttemptService {
         } catch (Exception ignored) {
         }
 
-        return new SubmissionResultDTO(
+        SubmissionResultDTO resultDTO = new SubmissionResultDTO(
                 savedAttempt.getId(),
                 quizId,
                 userId,
@@ -278,5 +354,21 @@ public class QuizAttemptServiceImpl implements QuizAttemptService {
                 tabSwitches,
                 complete
         );
+        Quiz quizObj = quizRepository.findById(quizId).orElse(null);
+        if (quizObj != null) {
+            resultDTO.setResultsPublished(quizObj.getResultsPublished());
+        }
+
+        // Automatic Badge Evaluation & Leaderboard Refresh
+        try {
+            badgeService.evaluateAndAwardBadges(userId, null);
+            List<Leaderboard> lbs = leaderboardRepository.findByQuizId(quizId);
+            for (Leaderboard lb : lbs) {
+                leaderboardService.refreshLeaderboard(lb.getId());
+            }
+        } catch (Exception ignored) {
+        }
+
+        return resultDTO;
     }
 }

@@ -26,4 +26,5 @@ public interface QuizService {
     List<Quiz> getByDifficulty(Difficulty difficulty);
 
     List<Quiz> getByDuration(Integer duration);
+    Quiz setResultsPublished(Long id, boolean published);
 }

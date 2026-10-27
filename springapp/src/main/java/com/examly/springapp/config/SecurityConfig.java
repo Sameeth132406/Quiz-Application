@@ -124,6 +124,9 @@ public class SecurityConfig {
                 // Enable CORS
                 .cors(Customizer.withDefaults())
 
+                // Allow embedding content (PDFs/videos/etc.) in iframes
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+
                 // Authentication Provider
                 .authenticationProvider(authenticationProvider())
 
@@ -157,12 +160,15 @@ public class SecurityConfig {
                         // Public APIs
                         .requestMatchers(
                                 "/api/auth/**",
+                                "/api/files/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**"
                         ).permitAll()
 
-                        // Admin-only User Management
+                        // Admin & Educator User Reading, Admin Management
+                        .requestMatchers(HttpMethod.GET, "/api/users", "/api/users/**")
+                        .hasAnyRole("ADMIN", "EDUCATOR")
                         .requestMatchers("/api/users", "/api/users/**")
                         .hasRole("ADMIN")
 

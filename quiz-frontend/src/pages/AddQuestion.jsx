@@ -88,7 +88,7 @@ const AddQuestion = () => {
 
       <div className="card">
         <h1 className="page-title" style={{ marginBottom: '0.5rem' }}>Add MCQ Question</h1>
-        <p className="page-subtitle" style={{ marginBottom: '1.5rem' }}>Add a new question for Quiz #{quizId}</p>
+        <p className="page-subtitle" style={{ marginBottom: '1.5rem' }}>Add a new question for this assessment</p>
 
         {error && <ErrorMessage message={error} />}
 

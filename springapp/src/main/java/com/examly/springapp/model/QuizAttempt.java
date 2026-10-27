@@ -31,6 +31,21 @@ public class QuizAttempt {
 
     private Integer tabSwitches = 0;
 
+    @Transient
+    private String studentName;
+
+    @Transient
+    private String studentEmail;
+
+    @Transient
+    private String username;
+
+    @Transient
+    private String userEmail;
+
+    @Transient
+    private Boolean resultsPublished = false;
+
     public QuizAttempt() {
     }
 
@@ -133,5 +148,57 @@ public class QuizAttempt {
 
     public void setCompletedAt(LocalDateTime completedAt) {
         this.completedAt = completedAt;
+    }
+
+    public String getStudentName() {
+        return studentName != null ? studentName : username;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+        if (this.username == null) {
+            this.username = studentName;
+        }
+    }
+
+    public String getStudentEmail() {
+        return studentEmail != null ? studentEmail : userEmail;
+    }
+
+    public void setStudentEmail(String studentEmail) {
+        this.studentEmail = studentEmail;
+        if (this.userEmail == null) {
+            this.userEmail = studentEmail;
+        }
+    }
+
+    public String getUsername() {
+        return username != null ? username : studentName;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+        if (this.studentName == null) {
+            this.studentName = username;
+        }
+    }
+
+    public String getUserEmail() {
+        return userEmail != null ? userEmail : studentEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+        if (this.studentEmail == null) {
+            this.studentEmail = userEmail;
+        }
+    }
+
+    public Boolean getResultsPublished() {
+        return resultsPublished != null ? resultsPublished : false;
+    }
+
+    public void setResultsPublished(Boolean resultsPublished) {
+        this.resultsPublished = resultsPublished != null ? resultsPublished : false;
     }
 }

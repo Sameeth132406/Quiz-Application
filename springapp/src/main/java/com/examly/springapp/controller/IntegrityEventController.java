@@ -6,6 +6,7 @@ import com.examly.springapp.service.IntegrityEventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,11 +20,13 @@ public class IntegrityEventController {
     private IntegrityEventService integrityEventService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','EDUCATOR')")
     public ResponseEntity<List<IntegrityEvent>> getAllEvents() {
         return ResponseEntity.ok(integrityEventService.getAllEvents());
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','EDUCATOR')")
     public ResponseEntity<?> getEventById(@PathVariable Long id) {
 
         IntegrityEvent event = integrityEventService.getEventById(id);
@@ -74,6 +77,7 @@ public class IntegrityEventController {
     }
 
     @GetMapping("/user/{userId}")
+    @PreAuthorize("hasAnyRole('ADMIN','EDUCATOR')")
     public ResponseEntity<List<IntegrityEvent>> getByUser(
             @PathVariable Long userId) {
 
@@ -82,6 +86,7 @@ public class IntegrityEventController {
     }
 
     @GetMapping("/attempt/{attemptId}")
+    @PreAuthorize("hasAnyRole('ADMIN','EDUCATOR')")
     public ResponseEntity<List<IntegrityEvent>> getByAttempt(
             @PathVariable Long attemptId) {
 
@@ -90,6 +95,7 @@ public class IntegrityEventController {
     }
 
     @GetMapping("/type")
+    @PreAuthorize("hasAnyRole('ADMIN','EDUCATOR')")
     public ResponseEntity<List<IntegrityEvent>> getByType(
             @RequestParam String eventType) {
 

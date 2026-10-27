@@ -14,8 +14,15 @@ public interface AnalyticsRepository
 
     List<Analytics> findByUserId(Long userId);
 
+    List<Analytics> findByCourseId(Long courseId);
+
     List<Analytics> findByUserIdAndQuizId(
             Long userId,
             Long quizId
+    );
+
+    List<Analytics> findByUserIdAndCourseId(
+            Long userId,
+            Long courseId
     );
 }

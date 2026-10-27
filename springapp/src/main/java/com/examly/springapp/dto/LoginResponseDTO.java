@@ -7,6 +7,7 @@ public class LoginResponseDTO {
     private String role;
     private Long userId;
     private String username;
+    private String profilePictureUrl;
 
     public LoginResponseDTO() {
     }
@@ -23,6 +24,15 @@ public class LoginResponseDTO {
         this.role = role;
         this.userId = userId;
         this.username = username;
+    }
+
+    public LoginResponseDTO(String token, String message, String role, Long userId, String username, String profilePictureUrl) {
+        this.token = token;
+        this.message = message;
+        this.role = role;
+        this.userId = userId;
+        this.username = username;
+        this.profilePictureUrl = profilePictureUrl;
     }
 
     public String getToken() {
@@ -63,5 +73,13 @@ public class LoginResponseDTO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
+
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
     }
 }

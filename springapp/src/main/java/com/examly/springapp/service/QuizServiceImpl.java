@@ -54,6 +54,13 @@ public class QuizServiceImpl implements QuizService {
         existingQuiz.setCategory(quiz.getCategory());
         existingQuiz.setDifficulty(quiz.getDifficulty());
         existingQuiz.setDuration(quiz.getDuration());
+        if (quiz.getResultsPublished() != null) {
+            existingQuiz.setResultsPublished(quiz.getResultsPublished());
+        }
+        existingQuiz.setEndDate(quiz.getEndDate());
+        if (quiz.getMaxAttempts() != null) {
+            existingQuiz.setMaxAttempts(quiz.getMaxAttempts());
+        }
 
         return quizRepository.save(existingQuiz);
     }
@@ -98,5 +105,15 @@ public class QuizServiceImpl implements QuizService {
     @Override
     public List<Quiz> getByDuration(Integer duration) {
         return quizRepository.findByDurationLessThanEqual(duration);
+    }
+
+    @Override
+    public Quiz setResultsPublished(Long id, boolean published) {
+        Quiz existingQuiz = quizRepository.findById(id).orElse(null);
+        if (existingQuiz == null) {
+            return null;
+        }
+        existingQuiz.setResultsPublished(published);
+        return quizRepository.save(existingQuiz);
     }
 }

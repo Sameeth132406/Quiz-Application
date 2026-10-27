@@ -69,7 +69,7 @@ const GradebookPage = () => {
                 <table className="custom-table">
                   <thead>
                     <tr>
-                      <th>Record ID</th>
+                      <th>S.No</th>
                       <th>User</th>
                       <th>Course ID</th>
                       <th>Quiz ID</th>
@@ -78,12 +78,12 @@ const GradebookPage = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {grades.map((g) => (
+                    {grades.map((g, idx) => (
                       <tr key={g.id}>
-                        <td>#{g.id}</td>
+                        <td><strong>{idx + 1}</strong></td>
                         <td style={{ fontWeight: '600' }}>{getUserName(g.userId)}</td>
-                        <td>Course #{g.courseId}</td>
-                        <td>Quiz #{g.quizId}</td>
+                        <td>Course {g.courseId}</td>
+                        <td>Quiz {g.quizId}</td>
                         <td style={{ fontWeight: '700', color: 'var(--accent-emerald)' }}>{g.score}</td>
                         <td><span className="badge badge-student">{g.grade || 'A'}</span></td>
                       </tr>
@@ -106,7 +106,7 @@ const GradebookPage = () => {
                 <table className="custom-table">
                   <thead>
                     <tr>
-                      <th>Attempt ID</th>
+                      <th>S.No</th>
                       <th>Quiz ID</th>
                       <th>User</th>
                       <th>Score</th>
@@ -115,10 +115,10 @@ const GradebookPage = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {attempts.map((a) => (
+                    {attempts.map((a, idx) => (
                       <tr key={a.id}>
-                        <td>#{a.id}</td>
-                        <td>Quiz #{a.quizId}</td>
+                        <td><strong>{idx + 1}</strong></td>
+                        <td>Quiz {a.quizId}</td>
                         <td style={{ fontWeight: '600' }}>{getUserName(a.userId)}</td>
                         <td style={{ fontWeight: '700' }}>{a.score} pts</td>
                         <td>

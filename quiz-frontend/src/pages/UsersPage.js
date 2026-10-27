@@ -93,7 +93,7 @@ const UsersPage = () => {
           <table className="custom-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th>S.No</th>
                 <th>Username</th>
                 <th>Email</th>
                 <th>Role</th>
@@ -101,9 +101,9 @@ const UsersPage = () => {
               </tr>
             </thead>
             <tbody>
-              {users.map((u) => (
+              {users.map((u, index) => (
                 <tr key={u.id}>
-                  <td>#{u.id}</td>
+                  <td><strong>{index + 1}</strong></td>
                   <td style={{ fontWeight: '600' }}>{u.username}</td>
                   <td style={{ color: 'var(--text-muted)' }}>{u.email}</td>
                   <td>

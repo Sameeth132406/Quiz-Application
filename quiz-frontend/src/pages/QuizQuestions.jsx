@@ -72,7 +72,7 @@ const QuizQuestions = () => {
       <div className="page-header">
         <div>
           <h1 className="page-title">
-            Questions — {quiz ? quiz.title : `Quiz #${quizId}`}
+            Questions — {quiz ? quiz.title : 'Assessment'}
           </h1>
           <p className="page-subtitle">
             {isStaff ? 'Manage and review assessment question bank' : 'Review quiz questions overview'}

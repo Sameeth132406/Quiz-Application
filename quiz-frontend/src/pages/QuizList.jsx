@@ -71,14 +71,27 @@ const QuizList = () => {
 
   return (
     <div>
-      <div className="page-header">
+      <div className="page-header" style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        gap: '1rem',
+        marginBottom: '1.5rem',
+      }}>
         <div>
-          <h1 className="page-title">Available Quizzes</h1>
-          <p className="page-subtitle">Test your skills across various topics and difficulty levels</p>
+          <h1 className="page-title" style={{ margin: 0, fontSize: '1.875rem', fontWeight: '800', color: 'var(--text-main, #0f172a)' }}>
+            Available Quizzes
+          </h1>
+          <p className="page-subtitle" style={{ margin: '0.35rem 0 0 0', color: 'var(--text-muted, #64748b)', fontSize: '0.95rem' }}>
+            Test your skills across various topics and difficulty levels
+          </p>
         </div>
         {(role === 'ADMIN' || role === 'EDUCATOR') && (
-          <Link to="/add-quiz">
-            <Button variant="primary">+ Create Quiz</Button>
+          <Link to="/add-quiz" style={{ textDecoration: 'none' }}>
+            <Button variant="primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontWeight: '700', padding: '0.65rem 1.25rem' }}>
+              + Create Quiz
+            </Button>
           </Link>
         )}
       </div>

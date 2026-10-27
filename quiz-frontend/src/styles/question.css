@@ -87,7 +87,8 @@
 
 /* Take Quiz Interface */
 .take-quiz-container {
-  max-width: 800px;
+  max-width: 1050px;
+  width: 100%;
   margin: 0 auto;
 }
 

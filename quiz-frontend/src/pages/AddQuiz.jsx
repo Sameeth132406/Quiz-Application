@@ -12,7 +12,9 @@ const AddQuiz = () => {
     description: '',
     category: 'General Knowledge',
     difficulty: 'EASY',
-    duration: 15
+    duration: 15,
+    endDate: '',
+    maxAttempts: 1
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -44,7 +46,9 @@ const AddQuiz = () => {
         description: formData.description,
         category: formData.category,
         difficulty: formData.difficulty,
-        duration: Number(formData.duration)
+        duration: Number(formData.duration),
+        endDate: formData.endDate ? formData.endDate : null,
+        maxAttempts: Number(formData.maxAttempts) || 1
       });
       alert('Quiz created successfully!');
       if (createdQuiz && createdQuiz.id) {
@@ -146,6 +150,38 @@ const AddQuiz = () => {
                 disabled={loading}
                 required
               />
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="form-group">
+              <label className="form-label" htmlFor="endDate">End Date / Deadline (Optional)</label>
+              <input
+                type="datetime-local"
+                id="endDate"
+                name="endDate"
+                className="form-input"
+                value={formData.endDate}
+                onChange={handleChange}
+                disabled={loading}
+              />
+              <span style={{ fontSize: '0.75rem', color: '#64748b' }}>Students must submit before this time</span>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" htmlFor="maxAttempts">Default Allowed Attempts</label>
+              <input
+                type="number"
+                id="maxAttempts"
+                name="maxAttempts"
+                min="1"
+                max="10"
+                className="form-input"
+                value={formData.maxAttempts}
+                onChange={handleChange}
+                disabled={loading}
+              />
+              <span style={{ fontSize: '0.75rem', color: '#64748b' }}>Default is 1 attempt per student</span>
             </div>
           </div>
 

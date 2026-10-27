@@ -14,7 +14,9 @@ const EditQuiz = () => {
     description: '',
     category: '',
     difficulty: 'EASY',
-    duration: 15
+    duration: 15,
+    endDate: '',
+    maxAttempts: 1
   });
   const [fetching, setFetching] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -30,7 +32,9 @@ const EditQuiz = () => {
         description: data.description || '',
         category: data.category || 'General',
         difficulty: data.difficulty || 'EASY',
-        duration: data.duration || 15
+        duration: data.duration || 15,
+        endDate: data.endDate ? data.endDate.substring(0, 16) : '',
+        maxAttempts: data.maxAttempts || 1
       });
     } catch (err) {
       setError('Unable to load quiz details for editing.');
@@ -66,7 +70,9 @@ const EditQuiz = () => {
         description: formData.description,
         category: formData.category,
         difficulty: formData.difficulty,
-        duration: Number(formData.duration)
+        duration: Number(formData.duration),
+        endDate: formData.endDate ? formData.endDate : null,
+        maxAttempts: Number(formData.maxAttempts) || 1
       });
       alert('Quiz updated successfully!');
       navigate(`/quiz/${id}`);
@@ -87,7 +93,7 @@ const EditQuiz = () => {
 
       <div className="card">
         <h1 className="page-title" style={{ marginBottom: '0.5rem' }}>Edit Quiz</h1>
-        <p className="page-subtitle" style={{ marginBottom: '1.5rem' }}>Update details for Quiz #{id}</p>
+        <p className="page-subtitle" style={{ marginBottom: '1.5rem' }}>Update quiz details and settings</p>
 
         {error && <ErrorMessage message={error} />}
 
@@ -162,6 +168,38 @@ const EditQuiz = () => {
                 disabled={loading}
                 required
               />
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="form-group">
+              <label className="form-label" htmlFor="endDate">End Date / Deadline (Optional)</label>
+              <input
+                type="datetime-local"
+                id="endDate"
+                name="endDate"
+                className="form-input"
+                value={formData.endDate}
+                onChange={handleChange}
+                disabled={loading}
+              />
+              <span style={{ fontSize: '0.75rem', color: '#64748b' }}>Students must submit before this time</span>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" htmlFor="maxAttempts">Default Allowed Attempts</label>
+              <input
+                type="number"
+                id="maxAttempts"
+                name="maxAttempts"
+                min="1"
+                max="10"
+                className="form-input"
+                value={formData.maxAttempts}
+                onChange={handleChange}
+                disabled={loading}
+              />
+              <span style={{ fontSize: '0.75rem', color: '#64748b' }}>Default is 1 attempt per student</span>
             </div>
           </div>
 

@@ -31,6 +31,15 @@ public class Quiz {
     @NotNull(message = "Duration cannot be null")
     private Integer duration;
 
+    @Column(name = "results_published")
+    private Boolean resultsPublished = false;
+
+    @Column(name = "end_date")
+    private java.time.LocalDateTime endDate;
+
+    @Column(name = "max_attempts")
+    private Integer maxAttempts = 1;
+
     public Quiz() {
     }
 
@@ -91,5 +100,29 @@ public class Quiz {
 
     public void setDuration(Integer duration) {
         this.duration = duration;
+    }
+
+    public Boolean getResultsPublished() {
+        return resultsPublished != null ? resultsPublished : false;
+    }
+
+    public void setResultsPublished(Boolean resultsPublished) {
+        this.resultsPublished = resultsPublished != null ? resultsPublished : false;
+    }
+
+    public java.time.LocalDateTime getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(java.time.LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
+
+    public Integer getMaxAttempts() {
+        return maxAttempts != null ? maxAttempts : 1;
+    }
+
+    public void setMaxAttempts(Integer maxAttempts) {
+        this.maxAttempts = maxAttempts != null ? maxAttempts : 1;
     }
 }

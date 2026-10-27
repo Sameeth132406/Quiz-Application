@@ -14,6 +14,8 @@ public class Analytics {
 
     private Long userId;
 
+    private Long courseId;
+
     private Integer totalAttempts;
 
     private Double averageScore;
@@ -93,5 +95,13 @@ public class Analytics {
 
     public void setLowestScore(Double lowestScore) {
         this.lowestScore = lowestScore;
+    }
+
+    public Long getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(Long courseId) {
+        this.courseId = courseId;
     }
 }

@@ -35,10 +35,39 @@ export const AuthProvider = ({ children }) => {
     }
   }, [role]);
 
+  // Sync profile details on mount if logged in
+  useEffect(() => {
+    if (token) {
+      import('../services/userService').then(({ default: userService }) => {
+        userService.getMyProfile().then(profile => {
+          if (profile) {
+            setUser(prev => {
+              const updated = {
+                ...prev,
+                fullName: profile.fullName || prev?.fullName,
+                profilePictureUrl: profile.profilePictureUrl || prev?.profilePictureUrl
+              };
+              localStorage.setItem('user', JSON.stringify(updated));
+              return updated;
+            });
+          }
+        }).catch(() => {});
+      }).catch(() => {});
+    }
+  }, [token]);
+
   const login = (authToken, userObj, userRole) => {
     setToken(authToken);
     setUser(userObj || { username: 'User', role: userRole });
     setRole(userRole || 'STUDENT');
+  };
+
+  const updateUserContext = (updatedData) => {
+    setUser(prev => {
+      const merged = { ...prev, ...updatedData };
+      localStorage.setItem('user', JSON.stringify(merged));
+      return merged;
+    });
   };
 
   const logout = () => {
@@ -61,6 +90,7 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated,
         loading,
         login,
+        updateUserContext,
         logout
       }}
     >

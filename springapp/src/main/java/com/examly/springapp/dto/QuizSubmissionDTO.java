@@ -6,12 +6,21 @@ import java.util.Map;
 public class QuizSubmissionDTO {
 
     private Long userId;
+    private Long attemptId;
     private Map<Long, String> answers;
     private LocalDateTime startedAt;
     private LocalDateTime completedAt;
     private Integer tabSwitches;
 
     public QuizSubmissionDTO() {
+    }
+
+    public Long getAttemptId() {
+        return attemptId;
+    }
+
+    public void setAttemptId(Long attemptId) {
+        this.attemptId = attemptId;
     }
 
     public QuizSubmissionDTO(Long userId,

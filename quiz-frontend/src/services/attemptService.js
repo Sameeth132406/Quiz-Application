@@ -37,6 +37,28 @@ export const attemptService = {
       const all = await api.get('/attempts');
       return Array.isArray(all.data) ? all.data.filter(a => a.userId === userId) : [];
     }
+  },
+
+  // Get student's eligibility (deadline check, attempt limits, best score)
+  getQuizEligibility: async (quizId) => {
+    const response = await api.get(`/attempts/quiz/${quizId}/eligibility`);
+    return response.data;
+  },
+
+  // Get students list with attempts and scores for a quiz (Educator/Admin)
+  getQuizStudents: async (quizId) => {
+    const response = await api.get(`/attempts/quiz/${quizId}/students`);
+    return response.data;
+  },
+
+  // Grant extra attempt(s) to a student (Educator/Admin)
+  grantAttempt: async (quizId, userId, allowedAttempts, reason) => {
+    const response = await api.post(`/attempts/quiz/${quizId}/grant-attempt`, {
+      userId,
+      allowedAttempts,
+      reason
+    });
+    return response.data;
   }
 };
 

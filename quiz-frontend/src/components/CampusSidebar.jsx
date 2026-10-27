@@ -3,8 +3,8 @@ import { NavLink } from 'react-router-dom';
 
 const CampusSidebar = ({ activePage = 'quizzes' }) => {
   const navItems = [
-    { id: 'coursework', label: 'Course Work', icon: '📚', to: '/quizzes' },
-    { id: 'resources', label: 'Resources', icon: '📑', to: '/quizzes' },
+    { id: 'coursework', label: 'Course Work', icon: '📚', to: '/courses' },
+    { id: 'resources', label: 'Resources', icon: '📑', to: '/courses' },
     { id: 'quizzes', label: 'Quizzes', icon: '📝', to: '/quizzes' },
     { id: 'timed', label: 'Timed Tests', icon: '⏱️', to: '/quizzes?filter=timed' },
     { id: 'activity', label: 'Activity', icon: '📈', to: '/analytics' },
